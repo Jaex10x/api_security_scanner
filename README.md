@@ -1,6 +1,29 @@
 # API Security Scanner
 
-A lightweight Python tool to analyze HTTP security headers of one or more API endpoints.
+An open-source DAST tool that scans your APIs for common security
+vulnerabilities based on the OWASP API Security Top 10.
+
+Detect and fix weaknesses in your APIs before attackers find them.
+
+![Scanner demo](docs/demo.png)
+
+## Features
+- Missing authentication detection
+- BOLA / IDOR testing
+- Security header checks
+- JSON and HTML reports
+
+## Installation
+    pip install -r requirements.txt
+
+## Usage
+    python -m scanner.cli scan openapi.yaml --token YOUR_TOKEN
+
+## Disclaimer
+Only scan APIs you own or have written permission to test.
+
+## License
+MIT
 
 ## Features
 - Performs GET requests (following redirects) to each supplied URL.

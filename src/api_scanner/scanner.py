@@ -1,17 +1,36 @@
-# SPDX-FileCopyrightText: 2024
-# SPDX-License-Identifier: MIT
-"""Core scanning functionality for API security.
-
-This module provides a simple scanner that performs HTTP requests
-against the supplied endpoint(s) and reports on common security
-headers and authentication mechanisms.
-"""
 import httpx
 from rich.console import Console
 from rich.table import Table
 from typing import List, Tuple
+from rich.console import Console
+from rich.table import Table
 
 console = Console()
+SEVERITY_STYLES = {
+    "Critical": "[bold red]Critical[/]",
+    "High": "[red]High[/]",
+    "Medium": "[yellow]Medium[/]",
+    "Low": "[blue]Low[/]",
+    "Info": "[magenta]Info[/]",
+}
+
+
+def print_report(findings):
+    table = Table(title="Findings")
+    table.add_column("Method")
+    table.add_column("Risk")
+    table.add_column("OWASP")
+    table.add_column("Issue")
+
+    for f in findings:
+        table.add_row(
+            f["method"],
+            SEVERITY_STYLES.get(f["severity"], f["severity"]),
+            f["owasp"],
+            f["issue"],
+        )
+
+    console.print(table)
 
 SECURITY_HEADERS = [
     "content-security-policy",
@@ -32,13 +51,6 @@ def _check_headers(response: httpx.Response) -> List[Tuple[str, str, bool]]:
     return results
 
 def scan_url(url: str) -> None:
-    """Fetch *url* and display a security‑header report.
-
-    The function performs a simple GET request (following redirects) and
-    prints a table indicating which of the common security headers are
-    present. It also reports the HTTP status code and the final URL after
-    redirects.
-    """
     try:
         resp = httpx.get(url, follow_redirects=True, timeout=10.0)
     except Exception as exc:
